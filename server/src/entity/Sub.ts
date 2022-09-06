@@ -23,33 +23,33 @@ export default class Sub extends BaseEntity {
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ nullable: true })
-  imageUrn: string;
+  // @Column({ nullable: true })
+  // imageUrn: string;
 
-  @Column({ nullable: true })
-  bannerUrn: string;
+  // @Column({ nullable: true })
+  // bannerUrn: string;
 
-  @Column()
-  username: string;
+  // @Column()
+  // username: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "username", referencedColumnName: "username" })
-  user: User;
+  // @ManyToOne(() => User)
+  // @JoinColumn({ name: "username", referencedColumnName: "username" })
+  // user: User;
 
-  @OneToMany(() => Post, (post) => post.sub)
-  posts: Post[];
+  // @OneToMany(() => Post, (post) => post.sub)
+  // posts: Post[];
 
-  @Expose()
-  get imageUrl(): string {
-    return this.imageUrn
-      ? `${process.env.APP_URL}/images/${this.imageUrn}`
-      : "https://www.gravatar.com/avatar?d=mp&f=y";
-  }
+  // @Expose()
+  // get imageUrl(): string {
+  //   return this.imageUrn
+  //     ? `${process.env.APP_URL}/images/${this.imageUrn}`
+  //     : "https://www.gravatar.com/avatar?d=mp&f=y";
+  // }
 
-  @Expose()
-  get bannerUrl(): string | undefined {
-    return this.bannerUrn
-      ? `${process.env.APP_URL}/images/${this.bannerUrn}`
-      : undefined;
-  }
+  // @Expose()
+  // get bannerUrl(): string | undefined {
+  //   return this.bannerUrn
+  //     ? `${process.env.APP_URL}/images/${this.bannerUrn}`
+  //     : undefined;
+  // }
 }

@@ -12,7 +12,7 @@ import useSWR from "swr";
 import PostCard from "../../components/PostCard";
 import SideBar from "../../components/SideBar";
 import { useAuthState } from "../../context/auth";
-import { Post } from "../../types/user.type";
+import { Post, Sub } from "../../types/user.type";
 
 const SubPage = () => {
   const [ownSub, setOwnSub] = useState(false);
@@ -25,11 +25,12 @@ const SubPage = () => {
     error,
     mutate,
   } = useSWR(subName ? `/subs/${subName}` : null);
-  useEffect(() => {
-    if (!sub || !user) return;
-    setOwnSub(authenticated && user.username === sub.username);
-  }, [sub]);
-  console.log("sub", sub);
+
+  const fetcher = async (url: string) => {
+    return await axios.get(url).then((res) => res.data);
+  };
+  const { data: subList } = useSWR<Sub>(`/subs/${subName}`, fetcher);
+
   const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files === null) return;
 
@@ -60,16 +61,8 @@ const SubPage = () => {
   let renderPosts;
   if (!sub) {
     renderPosts = <p className="text-lg text-center">로딩중...</p>;
-  } else if (sub.posts.length === 0) {
-    renderPosts = (
-      <p className="text-lg text-center">아직 작성된 포스트가 없습니다.</p>
-    );
   } else {
-    renderPosts = sub.posts.map((post: Post) => (
-      <PostCard key={post.identifier} post={post} subMutate={mutate} />
-    ));
   }
-  console.log("sub.imageUrl", sub?.imageUrl);
   return (
     <>
       {sub && (
@@ -82,7 +75,7 @@ const SubPage = () => {
               onChange={uploadImage}
             />
             {/* 배너 이미지 */}
-            <div className="bg-gray-400">
+            <div className="bg-cyan-500">
               {sub.bannerUrl ? (
                 <div
                   className="h-56"
@@ -96,7 +89,7 @@ const SubPage = () => {
                 ></div>
               ) : (
                 <div
-                  className="h-20 bg-gray-400"
+                  className="h-20 bg-cyan-500"
                   onClick={() => openFileInput("banner")}
                 ></div>
               )}
@@ -121,7 +114,7 @@ const SubPage = () => {
                     <h1 className="text-3xl font-bold ">{sub.title}</h1>
                   </div>
                   <p className="font-bold text-gray-400 text-small">
-                    /r/{sub.name}
+                    /subs/{sub.name}
                   </p>
                 </div>
               </div>

@@ -45,9 +45,9 @@ export default class Post extends BaseEntity {
   @JoinColumn({ name: "username", referencedColumnName: "username" })
   user: User;
 
-  @ManyToOne(() => Sub, (sub) => sub.posts)
-  @JoinColumn({ name: "subName", referencedColumnName: "name" })
-  sub: Sub;
+  // @ManyToOne(() => Sub, (sub) => sub.posts)
+  // @JoinColumn({ name: "subName", referencedColumnName: "name" })
+  // sub: Sub;
 
   @Exclude()
   @OneToMany(() => Comment, (comment) => comment.post)

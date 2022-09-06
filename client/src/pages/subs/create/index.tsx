@@ -29,11 +29,16 @@ const Subs = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="flex flex-col items-center justify-center h-screen p-6">
         <div className="w-10/12 mx-auto md:w-96">
-          <h1 className="mb-2 text-lg font-bold">글 작성</h1>
-          {user && <p>작성자 : {user.username}</p>}
+          {/* {user && <p>작성자 : {user.username}</p>} */}
+          <InputGroup
+            placeholder="Name"
+            value={name}
+            setValue={setName}
+            error={errors.name}
+          />
           <form onSubmit={handleSubmit}>
             <InputGroup
               placeholder="Title"
@@ -42,20 +47,14 @@ const Subs = () => {
               error={errors.title}
             />
             <InputGroup
-              placeholder="Name"
-              value={name}
-              setValue={setName}
-              error={errors.name}
-            />
-            <InputGroup
               placeholder="Discription"
               type="description"
               value={description}
               setValue={setDiscription}
               error={errors.description}
             />
-            <button className="w-full py-4 mb-2 text-md font-bold text-white uppercase bg-gray-400 border border-gray-400 rounded">
-              커뮤니티 만들기
+            <button className="w-full py-4 mb-2 text-md font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">
+              Create Community
             </button>
           </form>
         </div>
@@ -81,7 +80,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: {} };
   } catch (error) {
     // 백엔드에서 요청에서 던져준 쿠키를 이용해 인증 처리할 때 에러가 나면 /login 페이지로 이동
-    res.writeHead(307, { Location: "/login" }).end();
+    // res.writeHead(307, { Location: "/login" }).end();
     return { props: {} };
   }
 };

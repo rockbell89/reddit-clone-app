@@ -16,7 +16,6 @@ export interface Sub {
   username: string;
   posts: Post[];
   postCount?: string;
-
   imageUrl: string;
   bannerUrl: string;
 }
@@ -31,7 +30,6 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   sub?: Sub;
-
   url: string;
   userVote?: number;
   voteScore?: number;
@@ -45,7 +43,6 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
   post?: Post;
-
   userVote: number;
   voteScore: number;
 }
