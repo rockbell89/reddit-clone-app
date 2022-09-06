@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 // import Vote from "./Vote";
 import BaseEntity from "./BaseEntity";
 import { Exclude } from "class-transformer";
+import Post from "./Post";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -24,8 +25,8 @@ export class User extends BaseEntity {
   @Exclude()
   password: string;
 
-  //   @OneToMany(() => Post, (post) => post.user)
-  //   posts: Post[];
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   //   @OneToMany(() => Vote, (vote) => vote.user)
   //   votes: Vote[];

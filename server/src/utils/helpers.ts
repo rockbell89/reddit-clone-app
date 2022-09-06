@@ -1,4 +1,5 @@
 export const slugify = function (str: string) {
+  str = encodeURI(str);
   str = str.replace(/^\s+|\s+$/g, ""); // trim
   str = str.toLowerCase();
 

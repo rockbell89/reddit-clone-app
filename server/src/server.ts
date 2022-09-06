@@ -3,6 +3,7 @@ import morgan from "morgan";
 import { AppDataSource } from "./data-source";
 import authRoutes from "./routes/auth";
 import subsRoutes from "./routes/subs";
+import postRoutes from "./routes/posts";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -22,6 +23,7 @@ app.use(
 app.get("/", (_, res) => res.send("running"));
 app.use("/api/auth", authRoutes);
 app.use("/api/subs", subsRoutes);
+app.use("/api/posts", postRoutes);
 app.use(express.static("public"));
 
 app.listen(process.env.PORT, async () => {
