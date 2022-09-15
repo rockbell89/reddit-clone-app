@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { Sub } from "../../types/user.type";
+import { Post, Sub } from "../../types/user.type";
 import useSWR from "swr";
 import PostCard from "../../components/PostCard";
 import Link from "next/link";
+import { useAuthState } from "../../context/auth";
 
 const Subs = () => {
   let router = useRouter();
@@ -15,6 +16,8 @@ const Subs = () => {
     return await axios.get(url).then((res) => res.data);
   };
   const { data: subList } = useSWR<Sub[]>(address, fetcher);
+  const { data: postList } = useSWR<Post[]>(`/posts`, fetcher);
+  const { loading, authenticated } = useAuthState();
 
   return (
     <>
@@ -32,8 +35,14 @@ const Subs = () => {
         </div>
       </div>
       <div className="flex space-x-7 max-w-7xl pt-5 px-5 mx-auto">
-        <div className="bg-white rounded-xl border w-9/12 overflow-hidden">
-          POST CARD
+        <div className="bg-white rounded-xl border w-9/12 overflow-hidden flex items-center">
+          <div className="max-w-7xl mx-auto text-center mt-5">
+            <Link href={authenticated ? "/subs/create" : "/login"}>
+              <a className=" inline-block  py-4 mb-2 px-4 text-md font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">
+                Create Community
+              </a>
+            </Link>
+          </div>
         </div>
         <div className="bg-white rounded-xl border w-3/12 overflow-hidden">
           <div className="bg-blue-500 text-white h-20 p-4">
@@ -44,17 +53,28 @@ const Subs = () => {
               return (
                 <div
                   key={index}
-                  className="d-flex align-middle justify-between flex p-4 border border-b-gray-300"
+                  className="items-center justify-between flex p-4 border border-b-gray-300 text-ellipsis overflow-hidden"
                 >
-                  <span className="font-bold text-black">{index + 1}</span>
-                  <Link href={`/subs/${sub.name}`}>
-                    <a className="hover:text-blue-500 hover:underline">
+                  <div className="flex items-center w-full">
+                    <span className="font-bold text-black mr-2">
+                      {index + 1}
+                    </span>
+                    {sub.imageUrl && (
+                      <img
+                        src={sub.imageUrl}
+                        alt={sub.name}
+                        className="w-10 rounded-full mr-2"
+                      />
+                    )}
+                    <span className="block text-ellipsis overflow-hidden">
                       {sub.name}
-                    </a>
-                  </Link>
-                  <button className="bg-blue-500 text-white rounded-xl px-4">
-                    JOIN
-                  </button>
+                    </span>
+                  </div>
+                  {authenticated && (
+                    <button className="bg-blue-500 text-sm text-white rounded-full px-4 h-8">
+                      <Link href={`/subs/${sub.name}`}> JOIN</Link>
+                    </button>
+                  )}
                 </div>
               );
             })}

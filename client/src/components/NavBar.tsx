@@ -14,7 +14,7 @@ const NavBar: React.FC = () => {
       .post("/auth/logout")
       .then(() => {
         dispatch("LOGOUT");
-        window.location.reload();
+        router.push("/");
       })
       .catch((error) => {
         console.log(error);

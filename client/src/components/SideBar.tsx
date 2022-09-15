@@ -29,7 +29,7 @@ const SideBar = ({ sub }: Props) => {
 
           {authenticated && (
             <div className="mx-0 my-2">
-              <Link href={`/${sub.name}/create`}>
+              <Link href={`/subs/${sub.name}/create`}>
                 <a className="w-full p-2 text-sm text-white bg-gray-400 rounded">
                   포스트 생성
                 </a>

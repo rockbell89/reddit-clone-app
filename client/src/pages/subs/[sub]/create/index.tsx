@@ -1,28 +1,28 @@
 import React, { FormEvent, useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import InputGroup from "../../../components/InputGroup";
-import { User } from "../../../types/user.type";
 import { GetServerSideProps } from "next";
-import Link from "next/link";
+import InputGroup from "../../../../components/InputGroup";
+import { User } from "../../../../types/user.type";
 
-const SubCreate = () => {
+const PostCreate = () => {
   let router = useRouter();
   const [title, setTitle] = useState("");
-  const [description, setDiscription] = useState("");
+  const [body, setBody] = useState("");
   const [name, setName] = useState("");
   const [errors, setErrors] = useState<any>({});
   const [user, setUser] = useState<User>();
+  const { sub: subName } = router.query;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      const res = await axios.post("/subs/create", {
-        description,
+      const res = await axios.post("/posts/create", {
         title,
-        name,
+        body,
+        sub: subName,
       });
-      router.push(`/subs/${res.data.name}`);
+      router.push(`/subs/${subName}/${res.data.identifier}/${res.data.slug}`);
     } catch (error: any) {
       setErrors(error.response?.data || {});
     }
@@ -32,13 +32,6 @@ const SubCreate = () => {
     <div>
       <div className="flex flex-col items-center justify-center h-screen p-6">
         <div className="w-10/12 mx-auto md:w-96">
-          {/* {user && <p>작성자 : {user.username}</p>} */}
-          <InputGroup
-            placeholder="Name"
-            value={name}
-            setValue={setName}
-            error={errors.name}
-          />
           <form onSubmit={handleSubmit}>
             <InputGroup
               placeholder="Title"
@@ -46,15 +39,14 @@ const SubCreate = () => {
               setValue={setTitle}
               error={errors.title}
             />
-            <InputGroup
-              placeholder="Discription"
-              type="description"
-              value={description}
-              setValue={setDiscription}
-              error={errors.description}
+            <textarea
+              placeholder="Body"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              style={{ height: "300px" }}
             />
             <button className="w-full py-4 mb-2 text-md font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">
-              Create Community
+              Create POST
             </button>
           </form>
         </div>
@@ -63,7 +55,7 @@ const SubCreate = () => {
   );
 };
 
-export default SubCreate;
+export default PostCreate;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {

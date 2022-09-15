@@ -1,4 +1,5 @@
 import axios from "axios";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, {
@@ -20,29 +21,26 @@ const SubPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const subName = router.query.sub;
-  const {
-    data: sub,
-    error,
-    mutate,
-  } = useSWR(subName ? `/subs/${subName}` : null);
-
   const fetcher = async (url: string) => {
     return await axios.get(url).then((res) => res.data);
   };
-  const { data: subList } = useSWR<Sub>(`/subs/${subName}`, fetcher);
+  const { data: sub } = useSWR<Sub>(`/subs/${subName}`, fetcher);
 
-  const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (!sub) return;
+    setOwnSub(authenticated && user?.username === sub.username);
+  }, [sub]);
+
+  const handleUploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files === null) return;
 
     const file = event.target.files[0];
-    console.log("file", file);
-
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", fileInputRef.current!.name);
 
     try {
-      await axios.post(`/subs/${sub.name}/upload`, formData, {
+      await axios.post(`/subs/${sub?.name}/upload`, formData, {
         headers: { "Context-Type": "multipart/form-data" },
       });
     } catch (error) {
@@ -61,8 +59,16 @@ const SubPage = () => {
   let renderPosts;
   if (!sub) {
     renderPosts = <p className="text-lg text-center">로딩중...</p>;
+  } else if (sub.posts?.length === 0) {
+    renderPosts = (
+      <p className="text-lg text-center">아직 작성된 포스트가 없습니다</p>
+    );
   } else {
+    renderPosts = sub.posts.map((post) => (
+      <PostCard post={post} key={post.identifier}></PostCard>
+    ));
   }
+
   return (
     <>
       {sub && (
@@ -70,9 +76,9 @@ const SubPage = () => {
           <div>
             <input
               type="file"
-              hidden={true}
               ref={fileInputRef}
-              onChange={uploadImage}
+              onChange={handleUploadImage}
+              hidden={true}
             />
             {/* 배너 이미지 */}
             <div className="bg-cyan-500">
@@ -132,3 +138,23 @@ const SubPage = () => {
 };
 
 export default SubPage;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  try {
+    const cookie = req.headers.cookie;
+    // 쿠키가 없다면 에러를 보내기
+    if (!cookie) throw new Error("Missing auth token cookie");
+
+    console.log(cookie);
+
+    // // 쿠키가 있다면 그 쿠키를 이용해서 백엔드에서 인증 처리하기
+    await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`, {
+      headers: { cookie },
+    });
+    return { props: {} };
+  } catch (error) {
+    // 백엔드에서 요청에서 던져준 쿠키를 이용해 인증 처리할 때 에러가 나면 /login 페이지로 이동
+    res.writeHead(307, { Location: "/" }).end();
+    return { props: {} };
+  }
+};
