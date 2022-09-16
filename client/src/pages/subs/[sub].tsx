@@ -29,7 +29,7 @@ const SubPage = () => {
   useEffect(() => {
     if (!sub) return;
     setOwnSub(authenticated && user?.username === sub.username);
-  }, [sub]);
+  }, [authenticated, user]);
 
   const handleUploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files === null) return;

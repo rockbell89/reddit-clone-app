@@ -25,7 +25,7 @@ const NavBar: React.FC = () => {
     <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between px-5 bg-white h-14 border-b border-gray-200">
       <span className="text-2xl font-semibold text-gray-400">
         <Link href="/">
-          <a aria-label="Home" href="/" className="logo">
+          <a aria-label="Home" className="logo">
             <svg viewBox="0 0 20 20" className="logo-icons">
               <g>
                 <circle fill="#FF4500" cx="10" cy="10" r="10"></circle>

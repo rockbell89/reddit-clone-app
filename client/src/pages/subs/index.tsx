@@ -7,6 +7,7 @@ import useSWR from "swr";
 import PostCard from "../../components/PostCard";
 import Link from "next/link";
 import { useAuthState } from "../../context/auth";
+import Image from "next/image";
 
 const Subs = () => {
   let router = useRouter();
@@ -60,7 +61,7 @@ const Subs = () => {
                       {index + 1}
                     </span>
                     {sub.imageUrl && (
-                      <img
+                      <Image
                         src={sub.imageUrl}
                         alt={sub.name}
                         className="w-10 rounded-full mr-2"
